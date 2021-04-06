@@ -84,7 +84,21 @@ def profile(username):
     # grab the session user's from db
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
-    return render_template("profile.html", username=username)
+
+    if session["user"]:
+        return render_template("profile.html", username=username)
+    
+    return redirect(url_for("login"))
+
+
+@app.route("/logout")
+# we just use the get method, not the post. Given that get is the defult method, we don't have to specify it
+def logout():
+    # remove user from session cookies
+    flash("You have been logged out")
+    session.pop("user")
+    return redirect(url_for("login"))
+
 
 
 if __name__ == "__main__":
